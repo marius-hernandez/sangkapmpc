@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { useQuery } from "@tanstack/react-query";
+import Hydration from "./contexts/hydration";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,9 +17,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  // const {data}=useQuery({
+  //   queryKey:['users'], 
+  //   queryFn:()=>getUsers(),
+  // })
+
+
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+      <Hydration />
+        {children}
+        </body>
     </html>
   );
 }

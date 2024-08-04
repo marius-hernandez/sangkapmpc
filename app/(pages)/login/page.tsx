@@ -17,66 +17,47 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import Link from 'next/link';
-import { main } from './config/style';
-import { join } from 'path';
+import { image, main } from '../signup/config/style';
+import { getUsers } from './services/LoginServices';
+import { useUserStore } from '@/app/store';
+import { useRouter } from 'next/navigation';
  
 const formSchema = z.object({
-  fullname: z.string().min(5, {message:"Full name must be minimum of 5 characters"}),
-  username: z.string().min(5, {message:"Username must be minimum of 5 characters"}),
   email: z.string().min(2).email(),
   password: z.string().min(2),
 })
-function Signup() {
-    // 1. Define your form.
+
+const Login=()=> {
+    const setUser=useUserStore((state)=>state.setUser)
+    const router=useRouter()
+
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
-        fullname: "",
-        username: "",
         email: "",
         password: "",
       },
     })
   
-    // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
-      // Do something with the form values.
-      // ✅ This will be type-safe and validated.
-      console.log(values)
+      const user={
+        session:null,
+        fullname:'Marius',
+        username:'username',
+        email:'email',
+        role:'nonmember',
+      }
+      setUser(user)
+      router.push('/home')
     }
+    
   return (
-    <main className={`${main}  `}>
-      <Image src='/logo.png' priority className="m-auto" width={400} height={400} alt="sangkapLogo" />
+    <main className={`${main} `}>
+      <Image className={`${image} `} src='/logo.png'  priority width={400} height={400} alt="sangkapLogo" />
       <div className="px-28 place-content-center">
         <Form {...form}>
-          <h1 className='text-6xl mb-12 text-center font-bold'>SIGN UP</h1>
+          <h1 className='text-6xl mb-12 text-center font-bold'>LOGIN</h1>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                  control={form.control}
-                  name="fullname"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="shadcn" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-              />
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="shadcn" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
@@ -104,8 +85,10 @@ function Signup() {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
-              <Link href="/login">Already have an account? </Link>
+              <Link href={`#`}>Forgot password?</Link><br />
+              <Button type="submit" className='m-auto'>Log in</Button>
+              <br />
+              <Link href="/signup">Don&apos;t have an account? </Link>
           </form>
         </Form>
       </div>
@@ -114,4 +97,4 @@ function Signup() {
   )
 }
 
-export default Signup
+export default Login
